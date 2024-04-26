@@ -50,3 +50,8 @@ func countBytes(input []string) string {
 	}
 	return fmt.Sprintf("Number of bytes in file '%s': %d", filePath, len(content))
 }
+
+func printAll(input []string) string {
+	input = append(input, input[1])
+	return countCharacters(input) + "\n" + countBytes(input) + "\n" + countLines(input) + "\n" + countWords(input)
+}
