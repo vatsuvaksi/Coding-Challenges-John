@@ -2,11 +2,9 @@
 
 ## Description
 
-** This is the first challenge from John Coding Challenge playlist **
-Here is the problem statement 
-* https://codingchallenges.fyi/challenges/challenge-wc/
+- This is the first challenge from John's Coding Challenge playlist.
+- Here is the problem statement: [Challenge-wc](https://codingchallenges.fyi/challenges/challenge-wc/).
 
-
-## The final outputs for this is attached below
+## Final Outputs
 
 ![Demo Image](img/final_output.png)
