@@ -12,7 +12,7 @@ func InitialzeApplication() {
 	fmt.Println("║    Currently, the application supports the following commands: ║")
 	fmt.Println("║    [-c -l -w  -m (default)]                                    ║")
 	fmt.Println("║    Please enter the command in the following format:           ║")
-	fmt.Println("║    wc -[flag] txt_file_path                                    ║")
+	fmt.Println("║    vwc -[flag] txt_file_path                                   ║")
 	fmt.Println("║                                                                ║")
 	fmt.Println("║                            Enjoy!                              ║")
 	fmt.Println("║                                                                ║")
@@ -22,9 +22,20 @@ func InitialzeApplication() {
 
 func Start() {
 	// Parse Input
-	input, err := service.FetchInput()
+	input, isStepFinal, err := service.FetchInput()
 	if err != nil {
 		fmt.Print("err-> ", err)
 	}
-	fmt.Println(service.CommandFactory(input)(input))
+
+	if isStepFinal {
+		if len(input) == 4 {
+			input = append(input, "placeholder.value")
+		}
+
+		var tempArr = []string{"empty", input[4], input[1]}
+		fmt.Println(service.CommandFactory(tempArr)(tempArr))
+	} else {
+		fmt.Println(service.CommandFactory(input)(input))
+	}
+
 }

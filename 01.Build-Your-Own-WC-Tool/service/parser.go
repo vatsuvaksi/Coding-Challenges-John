@@ -9,18 +9,28 @@ import (
 )
 
 // FetchInput gathers input from the user, parses and validates it.
-func FetchInput() ([]string, error) {
+func FetchInput() ([]string, bool, error) {
 
+	var isStepFinal bool = false
 	input, err := fetchInput()
 	if err != nil {
-		return nil, fmt.Errorf("error reading input: %w", err)
+		return nil, isStepFinal, fmt.Errorf("error reading input: %w", err)
 	}
 	parsedString := parseInput(input)
-	if err := validate(parsedString); err != nil {
-		return nil, fmt.Errorf("validation error: %w", err)
+
+	// This is for handling final step
+	if !(strings.Compare(parsedString[0], "cat") == 0) {
+		if err := validate(parsedString); err != nil {
+			return nil, isStepFinal, fmt.Errorf("validation error: %w", err)
+		}
+	} else if strings.Compare(parsedString[0], "cat") == 0 {
+		isStepFinal = true
+		if err := validateForFinalStep(parsedString); err != nil {
+			return nil, isStepFinal, fmt.Errorf("validation error: %w", err)
+		}
 	}
 
-	return parsedString, nil
+	return parsedString, isStepFinal, nil
 }
 
 // validate checks the correctness of the parsed input according to the business rules.
@@ -72,4 +82,38 @@ func fetchInput() (string, error) {
 // parseInput splits the input string into words based on whitespace.
 func parseInput(input string) []string {
 	return strings.Fields(input)
+}
+
+func validateForFinalStep(parsedString []string) error {
+	// Check if parsedString length is sufficient for the final step
+	if len(parsedString) < 4 {
+		return fmt.Errorf("insufficient input for final step")
+	}
+
+	// Check if input[1] contains a dot (.)
+	if !strings.Contains(parsedString[1], ".") {
+		return fmt.Errorf("second element must contain a dot")
+	}
+
+	// Check if input[2] is a pipe (|)
+	if parsedString[2] != "|" {
+		return fmt.Errorf("third element must be a pipe (|)")
+	}
+
+	// Check if input[3] is 'vwc'
+	if parsedString[3] != "vwc" {
+		return fmt.Errorf("fourth element must be 'vwc'")
+	}
+
+	// handling for no flag case in final step
+
+	if len(parsedString) == 4 {
+		parsedString = append(parsedString, "place.holder")
+	}
+	// Check if input[4] is a valid flag or path
+	if err := validateFlags(parsedString[4]); err != nil {
+		return fmt.Errorf("invalid flag or path: %w", err)
+	}
+
+	return nil
 }
